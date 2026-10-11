@@ -222,7 +222,10 @@
             compatible = "zmk,behavior-tap-dance";
             #binding-cells = <0>;
             tapping-term-ms = <250>;
-            bindings = <&mkp RCLK>, <&mo 8>;  // tap/hold, double_tap
+            /* War <&mo 8>: die Keymap hat acht Ebenen, also die IDs 0-7.
+               Die ID 8 gibt es nicht, der Doppeltipp lief ins Leere.
+               7 = SCROLL. */
+            bindings = <&mkp RCLK>, <&mo 7>;  // tap/hold, double_tap
         };
 
         td_bore: BASE_or_EXTRA {
