@@ -142,32 +142,5 @@
                              // ╰────────┴────────┴────────╯  ╰────────┴────────╯
             >;
         };
-        /* Reine Zeiger-Ebenen: sie aendern keine einzige Taste, sondern
-           dienen allein dazu, dass die Trackball-Prozessoren in
-           charybdis_pointer.dtsi auf sie reagieren koennen. Deshalb
-           ueberall &trans.
-
-           Sie stehen ganz am Ende, damit die IDs 0-7 der bestehenden
-           Ebenen unveraendert bleiben.
-               ID 8 = PRECISE (langsam)   ID 9 = TURBO (schnell)       */
-        PRECISE {
-            display-name = "Fein";
-            bindings = <
-    &trans    &trans   &trans   &trans   &trans   &trans      &trans   &trans   &trans   &trans   &trans   &trans
-    &trans    &trans   &trans   &trans   &trans   &trans      &trans   &trans   &trans   &trans   &trans   &trans
-    &trans    &trans   &trans   &trans   &trans   &trans      &trans   &trans   &trans   &trans   &trans   &trans
-                                  &trans   &trans   &trans      &trans   &trans
-            >;
-        };
-
-        TURBO {
-            display-name = "Schnell";
-            bindings = <
-    &trans    &trans   &trans   &trans   &trans   &trans      &trans   &trans   &trans   &trans   &trans   &trans
-    &trans    &trans   &trans   &trans   &trans   &trans      &trans   &trans   &trans   &trans   &trans   &trans
-    &trans    &trans   &trans   &trans   &trans   &trans      &trans   &trans   &trans   &trans   &trans   &trans
-                                  &trans   &trans   &trans      &trans   &trans
-            >;
-        };
     };
 };
