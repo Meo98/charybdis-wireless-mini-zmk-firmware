@@ -16,6 +16,8 @@
  * Tastenbelegung waren aneinandergekettet, obwohl sie nichts
  * miteinander zu tun haben. SLOW laeuft jetzt wie BASE.
  *
+ * Ebenfalls am 12.10.: die Umkehr der Scrollrichtung ist raus.
+ *
  * Ein eigener Knopf zum Umschalten des Tempos braucht eine eigene
  * Ebene. Genau das hatte am 11.10. die Tap-Hold-Tasten lahmgelegt
  * (Ursache bis heute ungeklaert), deshalb bleibt es vorerst draussen.
@@ -31,7 +33,11 @@
         input-processors = <
             &zip_xy_scaler 1 15                              // Scroll-Tempo
             &zip_xy_to_scroll_mapper                         // XY wird zu Scrollen
-            &zip_scroll_transform (INPUT_TRANSFORM_Y_INVERT) // Richtung umkehren
         >;
+        /* Die Umkehr der Scrollrichtung ist entfernt (12.10., auf
+           Wunsch). Vorher stand hier:
+               &zip_scroll_transform (INPUT_TRANSFORM_Y_INVERT)
+           Soll auch die waagrechte Richtung kippen, waere das
+           INPUT_TRANSFORM_X_INVERT, beide zusammen mit (A | B). */
     };
 };
