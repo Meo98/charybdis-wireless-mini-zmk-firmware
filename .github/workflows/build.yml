@@ -217,9 +217,16 @@ jobs:
       shell: bash
       run: |
         set -euo pipefail
-        f="config/keymaps/${{ matrix.group.keymap }}.keymap"
-        test -f "$f" || { echo "[ERROR] Missing keymap file: $f"; exit 1; }
-        echo "Found $f"
+        # Zwei zulaessige Orte: config/<name>.keymap wird bevorzugt, weil
+        # der keymap-editor (nickcoutsos) die Keymap dort erwartet, neben
+        # der gleichnamigen Layout-Datei <name>.json. Der alte Ort
+        # config/keymaps/ bleibt als Rueckfall erhalten.
+        for f in "config/${{ matrix.group.keymap }}.keymap" \
+                 "config/keymaps/${{ matrix.group.keymap }}.keymap"; do
+          if [ -f "$f" ]; then echo "Found $f"; exit 0; fi
+        done
+        echo "[ERROR] Missing keymap file: config/${{ matrix.group.keymap }}.keymap"
+        exit 1
 
     # ───────── Build ─────────
     - name: Build ${{ matrix.group.shield }}${{ matrix.group.keymap && format(' [{0}]', matrix.group.keymap) || '' }}
@@ -278,7 +285,14 @@ jobs:
         # Copy the selected keymap into the config dir named after the shield.
         # ZMK's cmake finds keymaps by searching for ${shield}.keymap in ZMK_CONFIG.
         if [[ -n "${KM:-}" ]]; then
-          cp "$CONFIG_DIR/keymaps/${KM}.keymap" "$CONFIG_DIR/${TARGET}.keymap"
+          # Siehe Pruefschritt oben: config/<name>.keymap hat Vorrang.
+          if [[ -f "$CONFIG_DIR/${KM}.keymap" ]]; then
+            SRC="$CONFIG_DIR/${KM}.keymap"
+          else
+            SRC="$CONFIG_DIR/keymaps/${KM}.keymap"
+          fi
+          echo "> Keymap-Quelle: $SRC"
+          cp "$SRC" "$CONFIG_DIR/${TARGET}.keymap"
         fi
 
         echo "Build vars"
