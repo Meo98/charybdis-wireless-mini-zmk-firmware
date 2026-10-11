@@ -3,35 +3,42 @@
 
 /*
  * Die Zahlen in `layers = <...>` sind Ebenen-IDs, keine Positionen.
- * ZMK vergibt IDs beim Kompilieren; sie bleiben fest, auch wenn die
- * Reihenfolge in ZMK Studio geaendert wird (siehe
- * zmk_keymap_layer_active(zmk_keymap_layer_id_t)).
+ * ZMK vergibt IDs beim Kompilieren in Quelltext-Reihenfolge; sie
+ * bleiben fest, auch wenn die Reihenfolge in ZMK Studio geaendert wird
+ * (siehe zmk_keymap_layer_active(zmk_keymap_layer_id_t)).
+ * Diese Werte also NICHT an eine umsortierte Anzeige anpassen.
  *
- * Diese Werte also NICHT an eine umsortierte Anzeige anpassen --
- * genau das war am 11.10. ein Fehlschlag: mit <6> lag das Scrollen
- * auf der Slow-Ebene und der Zeiger liess sich dort nicht mehr
- * bewegen. Hier stehen wieder die urspruenglichen, richtigen IDs.
+ *   ID 6 = SLOW   ID 7 = SCROLL   ID 8 = PRECISE   ID 9 = TURBO
  *
- *   ID 6 = SLOW      ID 7 = SCROLL
+ * Geaendert am 11.10.: Die Bremse hing frueher an der SLOW-Ebene (ID 6)
+ * und machte den Zeiger dort ungewollt langsam. Jetzt haengt sie an
+ * eigenen Ebenen, die man gezielt gedrueckt haelt -- SLOW laeuft
+ * wieder mit normalem Tempo.
  */
 
 &trackball_listener {
-    /* base processor chain on all layers */
+    /* Grundkette auf allen Ebenen: unveraendertes Tempo. */
     input-processors = <&zip_xy_scaler 5 5>;
 
-    /* Scroll-Ebene (ID 7) */
+    /* Scrollen (ID 7) */
     scroller: scroller {
         layers           = <7>;
         input-processors = <
-            &zip_xy_scaler 1 15                              // Scales the scroll speed
-            &zip_xy_to_scroll_mapper                         // Converts XY movement to scroll events
-            &zip_scroll_transform (INPUT_TRANSFORM_Y_INVERT) // Inverts the scroll direction
+            &zip_xy_scaler 1 15                              // Scroll-Tempo
+            &zip_xy_to_scroll_mapper                         // XY wird zu Scrollen
+            &zip_scroll_transform (INPUT_TRANSFORM_Y_INVERT) // Richtung umkehren
         >;
     };
 
-    /* Langsam-Ebene (ID 6) */
-    slow_pointer: slow_pointer {
-        layers           = <6>;
+    /* Feinmodus (ID 8): rund ein Drittel Tempo, zum genauen Zielen. */
+    precise_pointer: precise_pointer {
+        layers           = <8>;
         input-processors = <&zip_xy_scaler 2 6>;
+    };
+
+    /* Schnellmodus (ID 9): doppeltes Tempo, fuer weite Wege. */
+    turbo_pointer: turbo_pointer {
+        layers           = <9>;
+        input-processors = <&zip_xy_scaler 10 5>;
     };
 };
