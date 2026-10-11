@@ -162,6 +162,13 @@
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <170>;
+            /* Ohne quick-tap-ms ist Tippen-dann-Halten abgeschaltet (so
+               die ZMK-Vorgabe). Auf einer Taste, die getippt Backspace
+               sendet, fehlt damit die Wiederholung zum Loeschen laengerer
+               Abschnitte. ZMK misst das Fenster ab dem ERSTEN Druck,
+               nicht ab dem Loslassen wie QMK -- der Wert muss daher
+               deutlich groesser sein als der von QMK gewohnte. */
+            quick-tap-ms = <500>;
             bindings = <&mo>, <&kp>;
         };
 
