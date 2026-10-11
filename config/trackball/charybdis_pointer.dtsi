@@ -2,43 +2,33 @@
 #include <dt-bindings/zmk/input_transform.h>
 
 /*
- * Die Zahlen in `layers = <...>` sind Ebenen-IDs, keine Positionen.
- * ZMK vergibt IDs beim Kompilieren in Quelltext-Reihenfolge; sie
- * bleiben fest, auch wenn die Reihenfolge in ZMK Studio geaendert wird
- * (siehe zmk_keymap_layer_active(zmk_keymap_layer_id_t)).
- * Diese Werte also NICHT an eine umsortierte Anzeige anpassen.
+ * TESTSTAND 11.10.: Diese Datei ist auf dem v4-Stand (scroller 7,
+ * slow_pointer 6). Die Ebenen PRECISE/TURBO existieren in der Keymap,
+ * werden hier aber bewusst NICHT angesprochen.
  *
- *   ID 6 = SLOW   ID 7 = SCROLL   ID 8 = PRECISE   ID 9 = TURBO
+ * Zweck: v5 enthielt zwei Aenderungen gleichzeitig -- zwei neue Ebenen
+ * UND neue Zeiger-Prozessoren. Seitdem senden die Tap-Hold-Tasten ihr
+ * Zeichen nicht mehr. Dieser Bau laesst nur die Ebenen uebrig und
+ * zeigt damit, welche der beiden Aenderungen schuld ist.
  *
- * Geaendert am 11.10.: Die Bremse hing frueher an der SLOW-Ebene (ID 6)
- * und machte den Zeiger dort ungewollt langsam. Jetzt haengt sie an
- * eigenen Ebenen, die man gezielt gedrueckt haelt -- SLOW laeuft
- * wieder mit normalem Tempo.
+ * Die Zahlen sind Ebenen-IDs, keine Positionen.
+ *   ID 6 = SLOW   ID 7 = SCROLL
  */
 
 &trackball_listener {
-    /* Grundkette auf allen Ebenen: unveraendertes Tempo. */
     input-processors = <&zip_xy_scaler 5 5>;
 
-    /* Scrollen (ID 7) */
     scroller: scroller {
         layers           = <7>;
         input-processors = <
-            &zip_xy_scaler 1 15                              // Scroll-Tempo
-            &zip_xy_to_scroll_mapper                         // XY wird zu Scrollen
-            &zip_scroll_transform (INPUT_TRANSFORM_Y_INVERT) // Richtung umkehren
+            &zip_xy_scaler 1 15
+            &zip_xy_to_scroll_mapper
+            &zip_scroll_transform (INPUT_TRANSFORM_Y_INVERT)
         >;
     };
 
-    /* Feinmodus (ID 8): rund ein Drittel Tempo, zum genauen Zielen. */
-    precise_pointer: precise_pointer {
-        layers           = <8>;
+    slow_pointer: slow_pointer {
+        layers           = <6>;
         input-processors = <&zip_xy_scaler 2 6>;
-    };
-
-    /* Schnellmodus (ID 9): doppeltes Tempo, fuer weite Wege. */
-    turbo_pointer: turbo_pointer {
-        layers           = <9>;
-        input-processors = <&zip_xy_scaler 10 5>;
     };
 };
